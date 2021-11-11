@@ -1,0 +1,26 @@
+#include <msp430.h> 
+
+
+/**
+ * main.c
+ */
+void main(void)
+{
+  BCSCTL2 |= DIVS_3;
+	WDTCTL = WDT_MDLY_32;	//Watch dog timer set to 1MHz
+	P1DIR = 0x41;//LEDS selected as output
+	P1OUT = 0x01;//GREEN LED on to start
+
+	_enable_interrupts();
+	IE1 |= WDTIE;//Selects the watch dog interrupt as the interrupt
+	
+	LPM1;//Low power mode
+}
+
+#pragma vector=WDT_VECTOR
+__interrupt void WDT(void)
+{
+    P1OUT ^= 0x01;//Toggles GREEN LED
+    P1OUT ^= 0x40;//Toggles RED LED
+    P1IFG = 0x00;//Clear interrupt flag
+}
