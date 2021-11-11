@@ -1,0 +1,24 @@
+#include <msp430.h> 
+
+#define RED LED BIT6
+/**
+ * main.c
+ */
+void main(void)
+{
+    P1DIR |= BIT6;
+    WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
+    TACCR0 = 31250-1;             // PWM Time Period/ frequency (1 KHz)
+    TACCTL1 = OUTMOD_7;          // reset/set mode 7 for output signal
+    TACCR1 = 6250-1;                // PWM Duty cycle is 75%
+    TACTL = TASSEL_2 + MC_1 + ID_3;   // SMCLK and Up Mode then clock divide by 4
+
+    TA0CCTL0 |= CCIE; //Capture and Compare mode
+    TA0CCTL1 |= CCIE; //Capture and Compare mode
+    TA0CCTL0 &=~CCIFG; //Clears Capture and Compare Interrupt Flag
+    TA0CCTL1 &=~CCIFG; //Clears Capture and Compare Interrupt Flag
+
+    _enable_interrupts(); //Enables all maskable interrupts
+
+    while(1);
+}
