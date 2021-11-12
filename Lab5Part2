@@ -1,26 +1,21 @@
 #include <msp430.h> 
 
-
+#define RED LED BIT6
 /**
  * main.c
  */
 void main(void)
 {
-    BCSCTL2 |= DIVS_3;
-	WDTCTL = WDT_MDLY_32;	//Watch dog timer set to 1MHz
-	P1DIR = 0x41;//LEDS selected as output
-	P1OUT = 0x01;//GREEN LED on to start
-
-	_enable_interrupts();
-	IE1 |= WDTIE;//Selects the watch dog interrupt as the interrupt
+    P1DIR |= BIT6;              //BIT6(Red LED) set to output
+	WDTCTL = WDTPW | WDTHOLD;	//Stop watchdog timer
+	P1SEL |= BIT6;              //Function select register TA0.1 output signal
+	TACCR0 = 62500-1;           //PWM Time Period/ frequency (1 KHz)
+	TACCTL1 = OUTMOD_7;         //Reset/set mode 7 for output signal
+	TACCR1 = 6250-1;                //PWM Duty cycle is 10%
+	TACTL = TASSEL_2 + MC_1 + ID_3;   //SMCLK 1MHz and Up Mode then clock divide by 8
 	
-	LPM1;//Low power mode
-}
-
-#pragma vector=WDT_VECTOR
-__interrupt void WDT(void)
-{
-    P1OUT ^= 0x01;//Toggles GREEN LED
-    P1OUT ^= 0x40;//Toggles RED LED
-    P1IFG = 0x00;//Clear interrupt flag
+	while(1)
+	{
+	    P1OUT ^= BIT6;//Toggle Red LED
+	}
 }
