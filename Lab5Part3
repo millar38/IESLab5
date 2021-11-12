@@ -8,7 +8,7 @@ void main(void)
 {
     P1DIR |= BIT6;              //Set Red LED as output
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
-    TACCR0 = 31250-1;             // PWM Time Period/ frequency (1 KHz)
+    TACCR0 = 31250-1;             // PWM Time Period/ frequency (1 MHz)
     TACCTL1 = OUTMOD_7;          // reset/set mode 7 for output signal
     TACCR1 = 6250-1;                // PWM Duty cycle is 20%
     TACTL = TASSEL_2 + MC_1 + ID_3;   // SMCLK and Up Mode then clock divide by 8
