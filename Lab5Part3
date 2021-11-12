@@ -10,7 +10,7 @@ void main(void)
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
     TACCR0 = 31250-1;             // PWM Time Period/ frequency (1 KHz)
     TACCTL1 = OUTMOD_7;          // reset/set mode 7 for output signal
-    TACCR1 = 6250-1;                // PWM Duty cycle is 75%
+    TACCR1 = 6250-1;                // PWM Duty cycle is 20%
     TACTL = TASSEL_2 + MC_1 + ID_3;   // SMCLK and Up Mode then clock divide by 4
 
     TA0CCTL0 |= CCIE; //Capture and Compare mode
@@ -21,4 +21,18 @@ void main(void)
     _enable_interrupts(); //Enables all maskable interrupts
 
     while(1);
+}
+
+#pragma vector = TIMER0_A0_VECTOR       //define the interrupt service vector
+__interrupt void TA0_ISR (void)    // interrupt service routine
+{
+    P1OUT |=BIT6; //Toggle Red Led
+    TA0CCTL0 &=~CCIFG; //Clear Interrupt Flag
+}
+
+#pragma vector = TIMER0_A1_VECTOR       //define the interrupt service vector
+__interrupt void TA1_ISR (void)    // interrupt service routine
+{
+    P1OUT &=~BIT6; //Toggle Red Led
+    TA0CCTL1 &=~CCIFG; //Clear Interrupt Flag
 }
