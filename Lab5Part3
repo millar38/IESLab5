@@ -33,6 +33,6 @@ __interrupt void TA0_ISR (void)    // interrupt service routine
 #pragma vector = TIMER0_A1_VECTOR       //define the interrupt service vector
 __interrupt void TA1_ISR (void)    // interrupt service routine
 {
-    P1OUT &=~BIT6; //Toggle Red LED
+    P1OUT &=~BIT6; //Turn Red LED off
     TA0CCTL1 &=~CCIFG; //Clear Interrupt Flag
 }
